@@ -30,6 +30,7 @@ Remotos obrigatorios deste projeto:
 Regras complementares:
 
 - nao deixar alteracoes locais sem commit ao encerrar uma tarefa concluida;
+- nunca considerar a tarefa concluida sem `commit` e `push` publicados em `origin` e `deckdev` quando os dois remotos estiverem configurados;
 - se o push falhar por credencial, permissao, conflito ou rede, relatar o bloqueio claramente;
 - evitar commits que misturem assuntos sem relacao;
 - usar preferencialmente mensagens no padrao Conventional Commits.
@@ -51,6 +52,29 @@ Opcionalmente, o pacote pode usar autenticacao individual por usuario:
 - sessao HTTP nao oficial capturada a partir do login do usuario no navegador local
 
 O fallback legado por `.env` continua valido para manter compatibilidade.
+
+Regra de verificacao obrigatoria antes de afirmar qualquer coisa sobre configuracao:
+
+- nunca assumir que a configuracao do ClickUp esta ausente olhando apenas a raiz do projeto
+- sempre verificar separadamente:
+  - configuracao global do usuario em `~/.devs-loop/.env`
+  - auth local do usuario em `~/.devs-loop/auth.json`
+  - configuracao por projeto em `<raiz-do-projeto>/.devs-loop/.env`
+  - estado local da sessao no projeto, como `devs-loop-progress.md`, `devs-loop-session-history.md` e `.devs-loop/.session.json`
+- diferenciar explicitamente:
+  - `configuracao de autenticacao`
+  - `estado local da sessao`
+  - `artefatos do projeto`
+- nunca dizer "nao ha .env configurado" se voce nao verificou a configuracao global do usuario
+- nunca dizer "o ClickUp nao esta configurado" quando o que falta de fato e apenas a sessao local daquele projeto
+- se ainda houver ambiguidade depois da verificacao, perguntar ao usuario de forma direta e curta antes de concluir
+
+Regra de inteligencia operacional:
+
+- primeiro verificar
+- depois distinguir o tipo de ausencia ou presença
+- e so entao responder
+- se restar duvida, perguntar ao usuario antes de seguir
 
 Quando houver apenas `CLICKUP_API_TOKEN` no `.env` e o ambiente for interativo, o pacote pode pedir ao usuario para escolher explicitamente entre:
 
@@ -516,6 +540,9 @@ curl -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
 22. Quando houver muitas tasks correlatas do mesmo assunto na mesma sessao, evitar tarefas soltas e agrupa-las sob a task pai da iniciativa.
 23. Toda alteracao aplicada no ClickUp deve ficar explicita para o usuario no terminal/log e no historico visual da sessao.
 24. O historico visual incremental da sessao deve ser revisado e atualizado a cada rodada relevante, inclusive quando houver uso de tools do MCP.
+25. Antes de afirmar que o ClickUp nao esta configurado, verificar configuracao global do usuario, configuracao do projeto e estado local da sessao separadamente.
+26. Nunca confundir "sem credencial configurada" com "sem sessao local iniciada" ou "sem arquivos de historico no projeto".
+27. Quando a verificacao nao for conclusiva, perguntar ao usuario antes de agir ou responder categoricamente.
 
 ---
 
