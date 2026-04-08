@@ -1,0 +1,5 @@
+.env
+exports/
+__pycache__/
+*.pyc
+*.sqlite3
